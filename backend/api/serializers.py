@@ -32,9 +32,9 @@ class PortfoliosSerializer(serializers.ModelSerializer):
         
         extra_kwargs = {"author": {"read_only": True}}
         
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.fields['investment_amount'].initial = 0
-            self.fields['FTSE_weight'].initial = 0
-            self.fields['SNP500_weight'].initial = 0
-            self.fields['NIKKEI225_weight'].initial = 0
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['investment_amount'].initial = 0
+        self.fields['FTSE_weight'].initial = 0
+        self.fields['SNP500_weight'].initial = 0
+        self.fields['NIKKEI225_weight'].initial = 0
