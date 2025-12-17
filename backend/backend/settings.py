@@ -13,8 +13,19 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
+import os
+import environ
+
 
 load_dotenv()
+
+env = environ.Env()
+# Reads the .env file if it exists
+environ.Env.read_env()
+
+DATABASES = {
+    'default': env.db('DATABASE_URL', default='sqlite:///db.sqlite3')
+}
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -94,12 +105,20 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# database_url = os.getenv("DATABASE_URL")
+
+# DATABASES = {
+#         'default': dj_database_url.config(
+#             default=database_url
+#         )
+#     }
 
 
 # Password validation
