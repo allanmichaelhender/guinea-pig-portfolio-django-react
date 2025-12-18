@@ -17,7 +17,8 @@ class Portfolios(models.Model):
     FTSE_weight = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
     SNP500_weight = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
     NIKKEI225_weight = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
-    DAX_weight = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
+    EUROSTOXX_weight = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
+    HSI_weight = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
     submission_date = models.DateTimeField(auto_now_add=True)
     total_amount_invested = models.DecimalField(
         max_digits=30, decimal_places=2, default=0
@@ -66,7 +67,7 @@ class Nikkei225Data(models.Model):
     )
 
 
-class EuronextData(models.Model):
+class EuroStoxxData(models.Model):
     date = models.DateField(primary_key=True)
     open = models.DecimalField(max_digits=20, decimal_places=2)
     high = models.DecimalField(max_digits=20, decimal_places=2)
@@ -78,7 +79,7 @@ class EuronextData(models.Model):
         max_digits=10, decimal_places=8, blank=True, null=True
     )
 
-class SseData(models.Model):
+class HsiData(models.Model):
     date = models.DateField(primary_key=True)
     open = models.DecimalField(max_digits=20, decimal_places=2)
     high = models.DecimalField(max_digits=20, decimal_places=2)

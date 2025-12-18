@@ -1,4 +1,4 @@
-from .models import FtseData, Snp500Data, Nikkei225Data, EuronextData, SseData
+from .models import FtseData, Snp500Data, Nikkei225Data, EuroStoxxData, HsiData
 
 
 def invest_daily(
@@ -8,25 +8,25 @@ def invest_daily(
     FTSE_weight=0,
     SNP500_weight=0,
     NIKKEI225_weight=0,
-    EURONEXT_weight=0,
-    SSE_weight=0,
+    EUROSTOXX_weight=0,
+    HSI_weight=0,
     FTSE_queryset=None,
     SNP500_queryset=None,
     NIKKEI225_queryset=None,
-    EURONEXT_queryset=None,
-    SSE_queryset=None,
+    EUROSTOXX_queryset=None,
+    HSI_queryset=None,
 ):
     FTSE_total_shares = 0
     SNP500_total_shares = 0
     NIKKEI225_total_shares = 0
-    EURONEXT_total_shares = 0
-    SSE_total_shares = 0
+    EUROSTOXX_total_shares = 0
+    HSI_total_shares = 0
 
     FTSE_value = 0
     SNP500_value = 0
     NIKKEI225_value = 0
-    EURONEXT_value = 0
-    SSE_value = 0
+    EUROSTOXX_value = 0
+    HSI_value = 0
 
     timeframe = end_date - start_date
     total_days = timeframe.days
@@ -66,33 +66,33 @@ def invest_daily(
             ) * float(NIKKEI225_weight)
             NIKKEI225_value = NIKKEI225_total_shares * float(daily_entry.close)
 
-    if EURONEXT_queryset is not None and len(EURONEXT_queryset) != 0:
-        EURONEXT_aggregated_amount_per_day = total_amount_to_invest / (
-            len(EURONEXT_queryset) + 1
+    if EUROSTOXX_queryset is not None and len(EUROSTOXX_queryset) != 0:
+        EUROSTOXX_aggregated_amount_per_day = total_amount_to_invest / (
+            len(EUROSTOXX_queryset) + 1
         )
 
-        for daily_entry in EURONEXT_queryset:
-            EURONEXT_total_shares += (
-                float(EURONEXT_aggregated_amount_per_day) / float(daily_entry.close)
-            ) * float(EURONEXT_weight)
-            EURONEXT_value = EURONEXT_total_shares * float(daily_entry.close)
+        for daily_entry in EUROSTOXX_queryset:
+            EUROSTOXX_total_shares += (
+                float(EUROSTOXX_aggregated_amount_per_day) / float(daily_entry.close)
+            ) * float(EUROSTOXX_weight)
+            EUROSTOXX_value = EUROSTOXX_total_shares * float(daily_entry.close)
 
-    if SSE_queryset is not None and len(SSE_queryset) != 0:
-        SSE_aggregated_amount_per_day = total_amount_to_invest / (len(SSE_queryset) + 1)
+    if HSI_queryset is not None and len(HSI_queryset) != 0:
+        HSI_aggregated_amount_per_day = total_amount_to_invest / (len(HSI_queryset) + 1)
 
-        for daily_entry in SSE_queryset:
-            SSE_total_shares += (
-                float(SSE_aggregated_amount_per_day) / float(daily_entry.close)
-            ) * float(SSE_weight)
-            SSE_value = SSE_total_shares * float(daily_entry.close)
+        for daily_entry in HSI_queryset:
+            HSI_total_shares += (
+                float(HSI_aggregated_amount_per_day) / float(daily_entry.close)
+            ) * float(HSI_weight)
+            HSI_value = HSI_total_shares * float(daily_entry.close)
 
     return {
         "total_invested": total_amount_to_invest,
         "end_value": FTSE_value
         + SNP500_value
         + NIKKEI225_value
-        + EURONEXT_value
-        + SSE_value,
+        + EUROSTOXX_value
+        + HSI_value,
     }
 
 
@@ -103,25 +103,25 @@ def invest_monthly(
     FTSE_weight=0,
     SNP500_weight=0,
     NIKKEI225_weight=0,
-    EURONEXT_weight=0,
-    SSE_weight=0,
+    EUROSTOXX_weight=0,
+    HSI_weight=0,
     FTSE_queryset=None,
     SNP500_queryset=None,
     NIKKEI225_queryset=None,
-    EURONEXT_queryset=None,
-    SSE_queryset=None,
+    EUROSTOXX_queryset=None,
+    HSI_queryset=None,
 ):
     FTSE_total_shares = 0
     SNP500_total_shares = 0
     NIKKEI225_total_shares = 0
-    EURONEXT_total_shares = 0
-    SSE_total_shares = 0
+    EUROSTOXX_total_shares = 0
+    HSI_total_shares = 0
 
     FTSE_value = 0
     SNP500_value = 0
     NIKKEI225_value = 0
-    EURONEXT_value = 0
-    SSE_value = 0
+    EUROSTOXX_value = 0
+    HSI_value = 0
 
     total_invested = 0
 
@@ -147,27 +147,27 @@ def invest_monthly(
             ) * float(NIKKEI225_weight)
             NIKKEI225_value = NIKKEI225_total_shares * float(monthly_entry.close)
 
-    if EURONEXT_queryset is not None and len(EURONEXT_queryset) != 0:
-        for monthly_entry in EURONEXT_queryset:
-            EURONEXT_total_shares += (
+    if EUROSTOXX_queryset is not None and len(EUROSTOXX_queryset) != 0:
+        for monthly_entry in EUROSTOXX_queryset:
+            EUROSTOXX_total_shares += (
                 float(amount_monthly) / float(monthly_entry.close)
-            ) * float(EURONEXT_weight)
-            EURONEXT_value = EURONEXT_total_shares * float(monthly_entry.close)
+            ) * float(EUROSTOXX_weight)
+            EUROSTOXX_value = EUROSTOXX_total_shares * float(monthly_entry.close)
 
-    if SSE_queryset is not None and len(SSE_queryset) != 0:
-        for monthly_entry in SSE_queryset:
-            SSE_total_shares += (
+    if HSI_queryset is not None and len(HSI_queryset) != 0:
+        for monthly_entry in HSI_queryset:
+            HSI_total_shares += (
                 float(amount_monthly) / float(monthly_entry.close)
-            ) * float(SSE_weight)
-            SSE_value = SSE_total_shares * float(monthly_entry.close)
+            ) * float(HSI_weight)
+            HSI_value = HSI_total_shares * float(monthly_entry.close)
 
     return {
         "total_invested": total_invested,
         "end_value": FTSE_value
         + SNP500_value
         + NIKKEI225_value
-        + EURONEXT_value
-        + SSE_value,
+        + EUROSTOXX_value
+        + HSI_value,
     }
 
 
@@ -179,8 +179,8 @@ def invest(
     FTSE_weight=0,
     SNP500_weight=0,
     NIKKEI225_weight=0,
-    EURONEXT_weight=0,
-    SSE_weight=0,
+    EUROSTOXX_weight=0,
+    HSI_weight=0,
 ):
     FTSE_queryset = FtseData.objects.filter(
         date__range=(start_date, end_date)
@@ -194,11 +194,11 @@ def invest(
         date__range=(start_date, end_date)
     ).order_by("date")
 
-    EURONEXT_queryset = EuronextData.objects.filter(
+    EUROSTOXX_queryset = EuroStoxxData.objects.filter(
         date__range=(start_date, end_date)
     ).order_by("date")
 
-    SSE_queryset = SseData.objects.filter(date__range=(start_date, end_date)).order_by(
+    HSI_queryset = HsiData.objects.filter(date__range=(start_date, end_date)).order_by(
         "date"
     )
 
@@ -210,28 +210,28 @@ def invest(
             FTSE_weight,
             SNP500_weight,
             NIKKEI225_weight,
-            EURONEXT_weight,
-            SSE_weight,
+            EUROSTOXX_weight,
+            HSI_weight,
             FTSE_queryset,
             SNP500_queryset,
             NIKKEI225_queryset,
-            EURONEXT_queryset,
-            SSE_queryset,
+            EUROSTOXX_queryset,
+            HSI_queryset,
         )
 
     elif frequency == "monthly":
         return invest_monthly(
-         amount,
+            amount,
             start_date,
             end_date,
             FTSE_weight,
             SNP500_weight,
             NIKKEI225_weight,
-            EURONEXT_weight,
-            SSE_weight,
+            EUROSTOXX_weight,
+            HSI_weight,
             FTSE_queryset,
             SNP500_queryset,
             NIKKEI225_queryset,
-            EURONEXT_queryset,
-            SSE_queryset,
+            EUROSTOXX_queryset,
+            HSI_queryset,
         )

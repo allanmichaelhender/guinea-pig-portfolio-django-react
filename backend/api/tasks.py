@@ -1,5 +1,5 @@
 import requests
-from .models import EuronextData, FtseData, Snp500Data, Nikkei225Data, SseData
+from .models import EuroStoxxData, FtseData, Snp500Data, Nikkei225Data, HsiData
 from datetime import date
 
 datefrom = "2015-01-01"
@@ -83,15 +83,15 @@ def fetch_daily_data():
                     },
                 )
 
-    Euronext_api_url = create_url("^n100", datefrom, dateto, api_key)
-    Euronext_response = requests.get(Euronext_api_url, timeout=30)
+    eurostoxx_api_url = create_url("^STOXX50E", datefrom, dateto, api_key)
+    eurostoxx_response = requests.get(eurostoxx_api_url, timeout=30)
 
-    if Euronext_response.status_code == 200:
-        data = Euronext_response.json()
+    if eurostoxx_response.status_code == 200:
+        data = eurostoxx_response.json()
 
         if isinstance(data, list):
             for item in data:
-                EuronextData.objects.update_or_create(
+                EuroStoxxData.objects.update_or_create(
                     date=item["date"],
                     defaults={
                         "open": item["open"],
@@ -104,15 +104,15 @@ def fetch_daily_data():
                     },
                 )
 
-    Sse_api_url = create_url("000001.SS", datefrom, dateto, api_key)
-    Sse_response = requests.get(Sse_api_url, timeout=30)
+    hsi_api_url = create_url("^VIX", datefrom, dateto, api_key)
+    hsi_response = requests.get(hsi_api_url, timeout=30)
 
-    if Sse_response.status_code == 200:
-        data = Sse_response.json()
+    if hsi_response.status_code == 200:
+        data = hsi_response.json()
 
         if isinstance(data, list):
             for item in data:
-                SseData.objects.update_or_create(
+                HsiData.objects.update_or_create(
                     date=item["date"],
                     defaults={
                         "open": item["open"],

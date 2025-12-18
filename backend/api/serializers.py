@@ -27,8 +27,8 @@ class PortfoliosSerializer(serializers.ModelSerializer):
             "FTSE_weight",
             "SNP500_weight",
             "NIKKEI225_weight",
-            "EURONEXT_weight",
-            "SSE_weight",
+            "CAC40_weight",
+            "HSI_weight",
             "submission_date",
             "total_amount_invested",
             "final_amount",
@@ -50,5 +50,5 @@ class PortfoliosSerializer(serializers.ModelSerializer):
         self.fields["FTSE_weight"].initial = 0
         self.fields["SNP500_weight"].initial = 0
         self.fields["NIKKEI225_weight"].initial = 0
-        self.fields["EURONEXT_weight"].initial = 0
-        self.fields["SSE_weight"].initial = 0
+        self.fields["EUROSTOXX_weight"].initial = 0
+        self.fields["HSI_weight"].initial = 0

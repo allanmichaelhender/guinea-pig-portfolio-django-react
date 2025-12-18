@@ -29,8 +29,8 @@ class PortfoliosListCreate(generics.ListCreateAPIView):
             FTSE_weight = serializer.validated_data.get("FTSE_weight")
             SNP500_weight = serializer.validated_data.get("SNP500_weight")
             NIKKEI225_weight = serializer.validated_data.get("NIKKEI225_weight")
-            EURONEXT_weight = serializer.validated_data.get("NIKKEI225_weight")
-            SSE_weight = serializer.validated_data.get("NIKKEI225_weight")
+            EUROSTOXX_weight = serializer.validated_data.get("NIKKEI225_weight")
+            HSI_weight = serializer.validated_data.get("NIKKEI225_weight")
 
             computed_values = invest(
                 investment_frequency,
@@ -40,8 +40,8 @@ class PortfoliosListCreate(generics.ListCreateAPIView):
                 FTSE_weight,
                 SNP500_weight,
                 NIKKEI225_weight,
-                EURONEXT_weight,
-                SSE_weight,
+                EUROSTOXX_weight,
+                HSI_weight,
             )
 
 
