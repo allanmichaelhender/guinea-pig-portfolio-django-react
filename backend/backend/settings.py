@@ -30,6 +30,14 @@ DATABASES = {
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# settings.py example
+Q_CLUSTER = {
+    'name': 'MyProject',
+    'workers': 4,
+    'timeout': 240,   # Seconds a worker can spend on a task
+    'retry': 400,    # MUST be greater than timeout (e.g., 2x timeout)
+    'orm': 'default',
+}
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
