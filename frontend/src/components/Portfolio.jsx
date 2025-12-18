@@ -15,6 +15,8 @@ export default function Portfolio({ portfolio, onDelete }) {
       <p className="note-content">FTSE_weight {portfolio.FTSE_weight}</p>
       <p className="note-content">SNP500_weight {portfolio.SNP500_weight}</p>
       <p className="note-content">NIKKEI225_weight {portfolio.NIKKEI225_weight}</p>
+      <p className="note-content">EUROSTOXX_weight {portfolio.EUROSTOXX_weight}</p>
+      <p className="note-content">HSI_weight {portfolio.HSI_weight}</p>
       <p className="note-content">submission_date {formattedDate}</p>
       <p className="note-content">total_amount_invested {portfolio.total_amount_invested}</p>
       <p className="note-content">final_amount {portfolio.final_amount}</p>

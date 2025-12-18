@@ -6,6 +6,8 @@ class Portfolios(models.Model):
     frequency_choices = [
         ("daily", "Daily"),
         ("monthly", "Monthly"),
+        ("quarterly", "Quarterly"),
+        ("yearly", "Yearly"),
     ]
 
     investment_frequency = models.CharField(

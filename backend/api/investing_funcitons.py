@@ -1,4 +1,6 @@
 from .models import FtseData, Snp500Data, Nikkei225Data, EuroStoxxData, HsiData
+from django.db.models import F, Window
+from django.db.models.functions import RowNumber, ExtractYear, ExtractMonth, ExtractQuarter
 
 
 def invest_daily(
@@ -38,7 +40,6 @@ def invest_daily(
         )
 
         for daily_entry in FTSE_queryset.iterator():
-            print(daily_entry)
             FTSE_total_shares += (
                 float(FTSE_aggregated_amount_per_day) / float(daily_entry.close)
             ) * float(FTSE_weight)
@@ -96,8 +97,8 @@ def invest_daily(
     }
 
 
-def invest_monthly(
-    amount_monthly,
+def invest_monthly_quarterly_yearly(
+    amount,
     start_date,
     end_date,
     FTSE_weight=0,
@@ -126,40 +127,40 @@ def invest_monthly(
     total_invested = 0
 
     if FTSE_queryset is not None and len(FTSE_queryset) != 0:
-        for monthly_entry in FTSE_queryset:
+        for entry in FTSE_queryset:
             FTSE_total_shares += (
-                float(amount_monthly) / float(monthly_entry.close)
+                float(amount) / float(entry.close)
             ) * float(FTSE_weight)
-            FTSE_value = FTSE_total_shares * float(monthly_entry.close)
-            total_invested += amount_monthly
+            FTSE_value = FTSE_total_shares * float(entry.close)
+            total_invested += amount
 
     if SNP500_queryset is not None and len(SNP500_queryset) != 0:
-        for monthly_entry in SNP500_queryset:
+        for entry in SNP500_queryset:
             SNP500_total_shares += (
-                float(amount_monthly) / float(monthly_entry.close)
+                float(amount) / float(entry.close)
             ) * float(SNP500_weight)
-            SNP500_value = SNP500_total_shares * float(monthly_entry.close)
+            SNP500_value = SNP500_total_shares * float(entry.close)
 
     if NIKKEI225_queryset is not None and len(NIKKEI225_queryset) != 0:
-        for monthly_entry in NIKKEI225_queryset:
+        for entry in NIKKEI225_queryset:
             NIKKEI225_total_shares += (
-                float(amount_monthly) / float(monthly_entry.close)
+                float(amount) / float(entry.close)
             ) * float(NIKKEI225_weight)
-            NIKKEI225_value = NIKKEI225_total_shares * float(monthly_entry.close)
+            NIKKEI225_value = NIKKEI225_total_shares * float(entry.close)
 
     if EUROSTOXX_queryset is not None and len(EUROSTOXX_queryset) != 0:
-        for monthly_entry in EUROSTOXX_queryset:
+        for entry in EUROSTOXX_queryset:
             EUROSTOXX_total_shares += (
-                float(amount_monthly) / float(monthly_entry.close)
+                float(amount) / float(entry.close)
             ) * float(EUROSTOXX_weight)
-            EUROSTOXX_value = EUROSTOXX_total_shares * float(monthly_entry.close)
+            EUROSTOXX_value = EUROSTOXX_total_shares * float(entry.close)
 
     if HSI_queryset is not None and len(HSI_queryset) != 0:
-        for monthly_entry in HSI_queryset:
+        for entry in HSI_queryset:
             HSI_total_shares += (
-                float(amount_monthly) / float(monthly_entry.close)
+                float(amount) / float(entry.close)
             ) * float(HSI_weight)
-            HSI_value = HSI_total_shares * float(monthly_entry.close)
+            HSI_value = HSI_total_shares * float(entry.close)
 
     return {
         "total_invested": total_invested,
@@ -182,27 +183,23 @@ def invest(
     EUROSTOXX_weight=0,
     HSI_weight=0,
 ):
-    FTSE_queryset = FtseData.objects.filter(
-        date__range=(start_date, end_date)
-    ).order_by("date")
-
-    SNP500_queryset = Snp500Data.objects.filter(
-        date__range=(start_date, end_date)
-    ).order_by("date")
-
-    NIKKEI225_queryset = Nikkei225Data.objects.filter(
-        date__range=(start_date, end_date)
-    ).order_by("date")
-
-    EUROSTOXX_queryset = EuroStoxxData.objects.filter(
-        date__range=(start_date, end_date)
-    ).order_by("date")
-
-    HSI_queryset = HsiData.objects.filter(date__range=(start_date, end_date)).order_by(
-        "date"
-    )
-
     if frequency == "daily":
+        FTSE_queryset = FtseData.objects.filter(
+            date__range=(start_date, end_date)
+        ).order_by("date")
+        SNP500_queryset = Snp500Data.objects.filter(
+            date__range=(start_date, end_date)
+        ).order_by("date")
+        NIKKEI225_queryset = Nikkei225Data.objects.filter(
+            date__range=(start_date, end_date)
+        ).order_by("date")
+        EUROSTOXX_queryset = EuroStoxxData.objects.filter(
+            date__range=(start_date, end_date)
+        ).order_by("date")
+        HSI_queryset = HsiData.objects.filter(
+            date__range=(start_date, end_date)
+        ).order_by("date")
+
         return invest_daily(
             amount,
             start_date,
@@ -220,7 +217,47 @@ def invest(
         )
 
     elif frequency == "monthly":
-        return invest_monthly(
+        FTSE_monthly_queryset = FtseData.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date"), ExtractMonth("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        SNP500_monthly_queryset = Snp500Data.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date"), ExtractMonth("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        NIKKEI225_monthly_queryset = Nikkei225Data.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date"), ExtractMonth("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        EUROSTOXX_monthly_queryset = EuroStoxxData.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date"), ExtractMonth("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        HSI_monthly_queryset = HsiData.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date"), ExtractMonth("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        return invest_monthly_quarterly_yearly(
             amount,
             start_date,
             end_date,
@@ -229,9 +266,125 @@ def invest(
             NIKKEI225_weight,
             EUROSTOXX_weight,
             HSI_weight,
-            FTSE_queryset,
-            SNP500_queryset,
-            NIKKEI225_queryset,
-            EUROSTOXX_queryset,
-            HSI_queryset,
+            FTSE_monthly_queryset,
+            SNP500_monthly_queryset,
+            NIKKEI225_monthly_queryset,
+            EUROSTOXX_monthly_queryset,
+            HSI_monthly_queryset,
         )
+    
+    elif frequency == "quarterly":
+        FTSE_quarterly_queryset = FtseData.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date"), ExtractQuarter("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        SNP500_quarterly_queryset = Snp500Data.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date"), ExtractQuarter("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        NIKKEI225_quarterly_queryset = Nikkei225Data.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date"), ExtractQuarter("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        EUROSTOXX_quarterly_queryset = EuroStoxxData.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date"), ExtractQuarter("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        HSI_quarterly_queryset = HsiData.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date"), ExtractQuarter("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        return invest_monthly_quarterly_yearly(
+            amount,
+            start_date,
+            end_date,
+            FTSE_weight,
+            SNP500_weight,
+            NIKKEI225_weight,
+            EUROSTOXX_weight,
+            HSI_weight,
+            FTSE_quarterly_queryset,
+            SNP500_quarterly_queryset,
+            NIKKEI225_quarterly_queryset,
+            EUROSTOXX_quarterly_queryset,
+            HSI_quarterly_queryset,
+        )
+    
+    elif frequency == "yearly":
+        FTSE_yearly_queryset = FtseData.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        SNP500_yearly_queryset = Snp500Data.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        NIKKEI225_yearly_queryset = Nikkei225Data.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        EUROSTOXX_yearly_queryset = EuroStoxxData.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        HSI_yearly_queryset = HsiData.objects.annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[ExtractYear("date")],
+                order_by=F("date").asc(),
+            )
+        ).filter(row_number=1)
+
+        return invest_monthly_quarterly_yearly(
+            amount,
+            start_date,
+            end_date,
+            FTSE_weight,
+            SNP500_weight,
+            NIKKEI225_weight,
+            EUROSTOXX_weight,
+            HSI_weight,
+            FTSE_yearly_queryset,
+            SNP500_yearly_queryset,
+            NIKKEI225_yearly_queryset,
+            EUROSTOXX_yearly_queryset,
+            HSI_yearly_queryset,
+        )
+    
+

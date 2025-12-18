@@ -27,7 +27,7 @@ class PortfoliosSerializer(serializers.ModelSerializer):
             "FTSE_weight",
             "SNP500_weight",
             "NIKKEI225_weight",
-            "CAC40_weight",
+            "EUROSTOXX_weight",
             "HSI_weight",
             "submission_date",
             "total_amount_invested",
