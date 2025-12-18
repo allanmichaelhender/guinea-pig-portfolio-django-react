@@ -46,6 +46,8 @@ const PortfoliosForm = ({ onSourceChange }) => {
         />{" "}
         Monthly
       </div>
+        
+      <input type="number" className="amount-input" step="0.01" {...register("investment_amount", { valueAsNumber: true })}/>
 
       <input
         type="date"
