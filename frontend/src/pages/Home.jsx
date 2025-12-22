@@ -1,37 +1,37 @@
-import { useState, useEffect } from "react";
-import api from "../api";
-import PortfoliosForm from "../components/PortfoliosForm";
-import Portfolio from "../components/Portfolio";
-import "../styles/Home.css";
+import { useState, useEffect } from "react"
+import api from "../api"
+import PortfoliosForm from "../components/PortfoliosForm"
+import Portfolio from "../components/Portfolio"
+import "../styles/Home.css"
 
 function Home() {
-  const [portfolios, setPortfolios] = useState([]);
+  const [portfolios, setPortfolios] = useState([])
 
   useEffect(() => {
-    getPortfolios();
-  }, []);
+    getPortfolios()
+  }, [])
 
   const getPortfolios = () => {
     api
       .get("/api/portfolios/")
       .then((res) => res.data)
       .then((data) => {
-        setPortfolios(data);
-        console.log(data);
+        setPortfolios(data)
+        console.log(data)
       })
-      .catch((err) => alert(err));
-  };
+      .catch((err) => alert(err))
+  }
 
   const deletePortfolio = (id) => {
     api
       .delete(`/api/portfolios/${id}/`)
       .then((res) => {
-        if (res.status === 204) alert("Porfoliio deleted!");
-        else alert("Failed to delete note.");
-        getPortfolios();
+        if (res.status === 204) alert("Porfoliio deleted!")
+        else alert("Failed to delete note.")
+        getPortfolios()
       })
-      .catch((err) => alert(err));
-  };
+      .catch((err) => alert(err))
+  }
 
   return (
     <div>
@@ -45,7 +45,7 @@ function Home() {
         ))}
       </div>
     </div>
-  );
+  )
 }
 
-export default Home;
+export default Home
