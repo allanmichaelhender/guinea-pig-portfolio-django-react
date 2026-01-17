@@ -30,7 +30,6 @@ DATABASES = {
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# settings.py example
 Q_CLUSTER = {
     'name': 'MyProject',
     'workers': 4,
@@ -169,6 +168,5 @@ STATIC_URL = 'static/'
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWS_CREDENTIALS = True
 
-# settings.py
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
