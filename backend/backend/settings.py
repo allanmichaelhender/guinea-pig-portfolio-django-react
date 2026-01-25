@@ -45,7 +45,7 @@ Q_CLUSTER = {
 SECRET_KEY = 'django-insecure-=4rii7k7*++u57a6i&nvu%id+9p6e9)h(1m#+69-=6s4wtth=&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
