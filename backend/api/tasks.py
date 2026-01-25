@@ -1,13 +1,18 @@
 import requests
 from .models import EuroStoxxData, FtseData, Snp500Data, Nikkei225Data, HsiData
-from datetime import date
+from datetime import date, timedelta
+from dotenv import load_dotenv
+import os
 
-datefrom = "2015-01-01"
+load_dotenv("../.env")
 
 today = date.today()
+one_week_ago = today - timedelta(days=7)
+
+datefrom = one_week_ago.isoformat()
 dateto = today.isoformat()
 
-api_key = "xjDy6auzJiNBaXQjmERBIGb84lN93EsR"
+api_key = os.getenv("API_KEY")
 
 
 def create_url(symbol, datefrom, dateto, apikey):
