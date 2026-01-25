@@ -1,0 +1,100 @@
+.portfolio-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f0f0f0;
+  transition: transform 0.2s;
+  position: relative;
+}
+
+.portfolio-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.portfolio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #f8f9fa;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.frequency-badge {
+  background: #eef2ff;
+  color: #4f46e5;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Split into two columns */
+  gap: 16px;
+}
+
+.info-section h4 {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.info-section p {
+  font-size: 0.9rem;
+  margin: 4px 0;
+  color: #334155;
+}
+
+.info-section span {
+  font-weight: 600;
+  color: #64748b;
+}
+
+.weight-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tag {
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.performance {
+  grid-column: span 2; /* Performance takes full width at bottom */
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.change { font-weight: bold; font-size: 1.1rem; }
+.change.pos { color: #10b981; } /* Green */
+.change.neg { color: #ef4444; } /* Red */
+
+.delete-button {
+  margin-top: 16px;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #fee2e2;
+  color: #ef4444;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.delete-button:hover {
+  background: #ef4444;
+  color: white;
+}

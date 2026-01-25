@@ -1,36 +1,34 @@
-import react from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-import ProtectedRoute from "./components/ProtectedRoute";
+import Navbar from "./components/Navbar";
+import { ACCESS_TOKEN } from "./constants";
 
-function Logout() {
+function Logout({ onLogout }) {
   localStorage.clear();
+  useEffect(() => { onLogout(); }, [onLogout]);
   return <Navigate to="/login" />;
 }
 
-function RegisterAndLogout() {
-  localStorage.clear();
-  return <Register />;
-}
-
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem(ACCESS_TOKEN));
+
+  const updateAuthStatus = () => {
+    setIsLoggedIn(!!localStorage.getItem(ACCESS_TOKEN));
+  };
+
   return (
     <BrowserRouter>
+      <Navbar isLoggedIn={isLoggedIn} /> 
+      
       <Routes>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/login" element={<Login />} />
-        <Route path="/logout" element={<Logout />} />
-        <Route path="/register" element={<RegisterAndLogout />} />
+        <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
+        <Route path="/login" element={<Login onLoginSuccess={updateAuthStatus} />} />
+        <Route path="/logout" element={<Logout onLogout={updateAuthStatus} />} />
+        <Route path="/register" element={<Register />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
@@ -38,3 +36,4 @@ function App() {
 }
 
 export default App;
+

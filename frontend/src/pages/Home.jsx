@@ -1,51 +1,74 @@
-import { useState, useEffect } from "react"
-import api from "../api"
-import PortfoliosForm from "../components/PortfoliosForm"
-import Portfolio from "../components/Portfolio"
-import "../styles/Home.css"
+import { useState, useEffect } from "react";
+import api from "../api";
+import PortfoliosForm from "../components/PortfoliosForm";
+import Portfolio from "../components/Portfolio";
+import "../styles/Home.css";
+import "../styles/Form.css";
+import "../styles/Portfolio.css";
+import { v4 as uuidv4 } from "uuid";
 
-function Home() {
-  const [portfolios, setPortfolios] = useState([])
+function Home({ isLoggedIn }) {
+  const [portfolios, setPortfolios] = useState([]);
 
   useEffect(() => {
-    getPortfolios()
-  }, [])
+    if (isLoggedIn) {
+      getPortfolios();
+    } else {
+      setPortfolios([]);
+    }
+  }, [isLoggedIn]);
 
   const getPortfolios = () => {
     api
       .get("/api/portfolios/")
       .then((res) => res.data)
       .then((data) => {
-        setPortfolios(data)
-        console.log(data)
+        setPortfolios(data);
       })
-      .catch((err) => alert(err))
-  }
+      .catch((err) => alert(err));
+  };
+
+  const handleNewPortfolio = (PortfolioData) => {
+    const PortfolioWithId = {
+      ...PortfolioData,
+      id: PortfolioData.id || uuidv4(),
+    };
+
+    setPortfolios((prev) => [PortfolioWithId, ...prev]);
+  };
 
   const deletePortfolio = (id) => {
-    api
-      .delete(`/api/portfolios/${id}/`)
-      .then((res) => {
-        if (res.status === 204) alert("Porfoliio deleted!")
-        else alert("Failed to delete note.")
-        getPortfolios()
-      })
-      .catch((err) => alert(err))
-  }
+    if (isLoggedIn) {
+      api
+        .delete(`/api/portfolios/${id}/`)
+        .then((res) => {
+          if (res.status === 204) alert("Porfoliio deleted!");
+          else alert("Failed to delete note.");
+          getPortfolios();
+        })
+        .catch((err) => alert(err));
+    } else {
+      setPortfolios(portfolios.filter((p) => p.id !== id));
+    }
+  };
 
   return (
-    <div>
-      <PortfoliosForm onSourceChange={getPortfolios} />
-      <div>
-        <h2>Portfolios</h2>
-        {portfolios.map((portfolio) => (
-          <div key={portfolio.id}>
-            <Portfolio portfolio={portfolio} onDelete={deletePortfolio} />
-          </div>
+    <div className="home-wrapper">
+      <PortfoliosForm
+        onPortfolioCreated={handleNewPortfolio}
+        isLoggedIn={isLoggedIn}
+      />
+      <div className="portfolios-list">
+        {portfolios.map((p) => (
+          <Portfolio
+            key={p.id}
+            portfolio={p}
+            onDelete={() => deletePortfolio(p.id)}
+          />
         ))}
       </div>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;

@@ -23,10 +23,12 @@ const DisplayLiveTotal = ({ control }) => {
   });
   const total = weights.reduce((sum, v) => sum + (Number(v) || 0), 0);
 
-  return <div>Current Total: {total.toFixed(2)}/1.00</div>;
+  return (
+    <div className="current-total">Current Total: {total.toFixed(2)}/1.00</div>
+  );
 };
 
-const PortfoliosForm = ({ onSourceChange }) => {
+const PortfoliosForm = ({ isLoggedIn, onPortfolioCreated }) => {
   const {
     register,
     handleSubmit,
@@ -40,16 +42,19 @@ const PortfoliosForm = ({ onSourceChange }) => {
       NIKKEI225_weight: 0,
       EUROSTOXX_weight: 0,
       HSI_weight: 0,
+      end_date: new Date().toISOString().split('T')[0],
+      start_date: "2015-01-01",
     },
   });
 
   const today = new Date().toISOString().split("T")[0];
 
   const onSubmit = async (data) => {
+    const endpoint = isLoggedIn ? "/api/portfolios/" : "/api/portfolios-guest/";
+
     try {
-      const response = await api.post("/api/portfolios/", data);
-      alert("Portfolio Created!");
-      onSourceChange();
+      const response = await api.post(endpoint, data);
+      onPortfolioCreated(response.data);
     } catch (error) {
       console.error("Submission failed:", error.response?.data);
     }
@@ -58,24 +63,38 @@ const PortfoliosForm = ({ onSourceChange }) => {
   const onError = (errors) => console.log("Form Validation Errors:", errors);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit, onError)}>
-      <div className="investment-frequency-input-field">
-        <label htmlFor="investment_frequency">Investment Frequency: </label>
-        <select id="investment_frequency" {...register("investment_frequency")}>
-          <option value="daily">Daily</option>
-          <option value="monthly">Monthly</option>
-          <option value="quarterly">Quarterly</option>
-          <option value="yearly">Yearly</option>
-        </select>
+    <form className="form-container" onSubmit={handleSubmit(onSubmit, onError)}>
+      <div className="form-group">
+        <label htmlFor="investment_frequency" className="form-label">
+          Investment Frequency:
+        </label>
+        <div className="select-wrapper">
+          <select
+            id="investment_frequency"
+            className="custom-select"
+            {...register("investment_frequency")}
+          >
+            <option value="daily">Daily</option>
+            <option value="monthly">Monthly</option>
+            <option value="quarterly">Quarterly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
       </div>
 
-      <input
-        type="number"
-        className="amount-input"
-        step="0.01"
-        {...register("investment_amount", { valueAsNumber: true })}
-      />
+      <div className="form-group">
+        <label htmlFor="investment-amount"> Investment Amount:</label>
+        <input
+          id="investment-amount"
+          type="number"
+          className="form-input"
+          step="0.01"
+          {...register("investment_amount", { valueAsNumber: true })}
+        />
+      </div>
 
+    <div className="form-group">
+      <label htmlFor=""> Start Date:</label>
       <input
         type="date"
         className="date-input-field"
@@ -91,7 +110,11 @@ const PortfoliosForm = ({ onSourceChange }) => {
           },
         })}
       />
+      </div>
       {errors.start_date && <span>{errors.start_date.message}</span>}
+
+      <div className='form-group'>
+      <label>End Date:</label>
       <input
         type="date"
         className="date-input-field"
@@ -108,77 +131,102 @@ const PortfoliosForm = ({ onSourceChange }) => {
         })}
       />
       {errors.end_date && <span>{errors.end_date.message}</span>}
-
-      <input
-        type="number"
-        step="0.01"
-        className="weight-input"
-        {...register("FTSE_weight", {
-          required: "This weight is required",
-          min: { value: 0, message: "Minimum is 0" },
-          max: { value: 1, message: "Maximum is 1" },
-          valueAsNumber: true,
-        })}
-      />
+      </div>
+      <div className="form-group">
+        <label htmlFor="FTSE_weight">FTSE Weight: </label>
+        <input
+          type="number"
+          step="0.01"
+          className="form-input"
+          id="FTSE_weight"
+          {...register("FTSE_weight", {
+            required: "This weight is required",
+            min: { value: 0, message: "Minimum is 0" },
+            max: { value: 1, message: "Maximum is 1" },
+            valueAsNumber: true,
+          })}
+        />
+      </div>
       {errors.FTSE_weight && <span>{errors.FTSE_weight.message}</span>}
 
-      <input
-        type="number"
-        step="0.01"
-        className="weight-input"
-        {...register("SNP500_weight", {
-          required: "This weight is required",
-          min: { value: 0, message: "Minimum is 0" },
-          max: { value: 1, message: "Maximum is 1" },
-          valueAsNumber: true,
-        })}
-      />
+      <div className="form-group">
+        <label htmlFor="SNP500_weight">S&P500 Weight: </label>
+        <input
+          type="number"
+          step="0.01"
+          className="form-input"
+          id="SNP500_weight"
+          {...register("SNP500_weight", {
+            required: "This weight is required",
+            min: { value: 0, message: "Minimum is 0" },
+            max: { value: 1, message: "Maximum is 1" },
+            valueAsNumber: true,
+          })}
+        />
+      </div>
       {errors.SNP500_weight && <span>{errors.SNP500_weight.message}</span>}
 
-      <input
-        type="number"
-        step="0.01"
-        className="weight-input"
-        {...register("NIKKEI225_weight", {
-          required: "This weight is required",
-          min: { value: 0, message: "Minimum is 0" },
-          max: { value: 1, message: "Maximum is 1" },
-          valueAsNumber: true,
-        })}
-      />
+      <div className="form-group">
+        <label htmlFor="NIKKEI225_weight">NIKKEI225 Weight: </label>
+        <input
+          type="number"
+          step="0.01"
+          className="form-input"
+          id="NIKKEI225_weight"
+          {...register("NIKKEI225_weight", {
+            required: "This weight is required",
+            min: { value: 0, message: "Minimum is 0" },
+            max: { value: 1, message: "Maximum is 1" },
+            valueAsNumber: true,
+          })}
+        />
+      </div>
       {errors.NIKKEI225_weight && (
         <span>{errors.NIKKEI225_weight.message}</span>
       )}
 
-      <input
-        type="number"
-        step="0.01"
-        className="weight-input"
-        {...register("EUROSTOXX_weight", {
-          required: "This weight is required",
-          min: { value: 0, message: "Minimum is 0" },
-          max: { value: 1, message: "Maximum is 1" },
-          valueAsNumber: true,
-        })}
-      />
+      <div className="form-group">
+        <label htmlFor="EUROSTOXX_weight">EUROSTOXX Weight: </label>
+        <input
+          type="number"
+          step="0.01"
+          className="form-input"
+          id="EUROSTOXX_weight"
+          {...register("EUROSTOXX_weight", {
+            required: "This weight is required",
+            min: { value: 0, message: "Minimum is 0" },
+            max: { value: 1, message: "Maximum is 1" },
+            valueAsNumber: true,
+          })}
+        />
+      </div>
       {errors.EUROSTOXX_weight && (
         <span>{errors.EUROSTOXX_weight.message}</span>
       )}
 
-      <input
-        type="number"
-        step="0.01"
-        className="weight-input"
-        {...register("HSI_weight", {
-          required: "This weight is required",
-          min: { value: 0, message: "Minimum is 0" },
-          max: { value: 1, message: "Maximum is 1" },
-          valueAsNumber: true,
-        })}
-      />
+      <div className="form-group">
+        <label htmlFor="HSI_weight">HSI Weight: </label>
+        <input
+          type="number"
+          step="0.01"
+          className="form-input"
+          id="HSI_weight"
+          {...register("HSI_weight", {
+            required: "This weight is required",
+            min: { value: 0, message: "Minimum is 0" },
+            max: { value: 1, message: "Maximum is 1" },
+            valueAsNumber: true,
+          })}
+        />
+      </div>
       {errors.HSI_weight && <span>{errors.HSI_weight.message}</span>}
+
+        <div className="form-group">
       <DisplayLiveTotal control={control} />
-      <button type="submit">Submit Portfolio</button>
+      <button className="form-button" type="submit">
+        Submit
+      </button>
+      </div>
     </form>
   );
 };

@@ -1,7 +1,7 @@
 import LoginForm from "../components/LoginForm";
 
-function Login() {
-  return <LoginForm route="/api/token/" method="login" />;
+function Login( {onLoginSuccess} ) {
+  return <LoginForm route="/api/token/" method="login" onLoginSuccess={onLoginSuccess}/>;
 }
 
 export default Login;

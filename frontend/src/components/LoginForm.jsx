@@ -5,7 +5,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/Form.css";
 import LoadingIndicator from "./LoadingIndicator";
 
-function LoginForm({ route, method }) {
+function LoginForm({ onLoginSuccess, route, method }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,6 +22,11 @@ function LoginForm({ route, method }) {
       if (method === "login") {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
+
         navigate("/");
       } else {
         navigate("/login");
@@ -50,7 +55,7 @@ function LoginForm({ route, method }) {
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Password"
       />
-      {loading && <LoadingIndicator/>}
+      {loading && <LoadingIndicator />}
       <button className="form-button" type="submit">
         {title}
       </button>

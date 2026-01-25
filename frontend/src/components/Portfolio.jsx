@@ -1,29 +1,48 @@
 import React from "react";
-import "../styles/Note.css";
-
 
 export default function Portfolio({ portfolio, onDelete }) {
-  const formattedDate = new Date(portfolio.submission_date).toLocaleDateString("en-UK");
-
+  const formattedDate = new Date(portfolio.submission_date).toLocaleDateString(
+    "en-UK",
+  );
 
   return (
-    <div className="note-container">
-        <h1>ID: {portfolio.id}</h1>
-      <p className="note-title">investment_frequency {portfolio.investment_frequency}</p>
-      <p className="note-content">start_date {portfolio.start_date}</p>
-      <p className="note-content">end_date {portfolio.end_date}</p>
-      <p className="note-content">FTSE_weight {portfolio.FTSE_weight}</p>
-      <p className="note-content">SNP500_weight {portfolio.SNP500_weight}</p>
-      <p className="note-content">NIKKEI225_weight {portfolio.NIKKEI225_weight}</p>
-      <p className="note-content">EUROSTOXX_weight {portfolio.EUROSTOXX_weight}</p>
-      <p className="note-content">HSI_weight {portfolio.HSI_weight}</p>
-      <p className="note-content">submission_date {formattedDate}</p>
-      <p className="note-content">total_amount_invested {portfolio.total_amount_invested}</p>
-      <p className="note-content">final_amount {portfolio.final_amount}</p>
-      <p className="note-content"> change_percentage {portfolio.change_percentage}</p>
-      <button className="delete-button" onClick={() => onDelete(portfolio.id)}>
-        Delete
-      </button>
+  <div className="portfolio-card">
+    <div className="portfolio-header">
+      <h3>Portfolio ID: {portfolio.id.toString().slice(-4)}</h3>
+      <span className="frequency-badge">{portfolio.investment_frequency}</span>
     </div>
-  );
+
+    <div className="portfolio-grid">
+      <div className="info-section">
+        <h4>Schedule</h4>
+        <p><span>Start:</span> {portfolio.start_date}</p>
+        <p><span>End:</span> {portfolio.end_date}</p>
+      </div>
+
+      <div className="info-section">
+        <h4>Weights</h4>
+        <div className="weight-tags">
+          <span className="tag">FTSE: {portfolio.FTSE_weight}</span>
+          <span className="tag">S&P: {portfolio.SNP500_weight}</span>
+          <span className="tag">NIK: {portfolio.NIKKEI225_weight}</span>
+          <span className="tag">EUR: {portfolio.EUROSTOXX_weight}</span>
+          <span className="tag">HSI: {portfolio.HSI_weight}</span>
+        </div>
+      </div>
+
+      <div className="info-section performance">
+        <h4>Performance</h4>
+        <p className="total-invested">Total: £{portfolio.total_amount_invested}</p>
+        <p className="final-value">Final: £{Number(portfolio.final_amount).toFixed(2)}</p>
+        <p className={`change ${portfolio.change_percentage >= 0 ? 'pos' : 'neg'}`}>
+          {portfolio.change_percentage >= 0 ? '▲' : '▼'} {(portfolio.change_percentage * 100).toFixed(2)}%
+        </p>
+      </div>
+    </div>
+
+    <button className="delete-button" onClick={() => onDelete(portfolio.id)}>
+      Delete Portfolio
+    </button>
+  </div>
+);
 }
