@@ -36,7 +36,7 @@ const PortfoliosForm = ({ isLoggedIn, onPortfolioCreated }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      investment_amount: 0,
+      investment_amount: 1,
       FTSE_weight: 0,
       SNP500_weight: 0,
       NIKKEI225_weight: 0,
@@ -83,7 +83,7 @@ const PortfoliosForm = ({ isLoggedIn, onPortfolioCreated }) => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="investment-amount"> Investment Amount:</label>
+        <label htmlFor="investment-amount"> Investment Amount: £</label>
         <input
           id="investment-amount"
           type="number"

@@ -42,7 +42,7 @@ function Home({ isLoggedIn }) {
       api
         .delete(`/api/portfolios/${id}/`)
         .then((res) => {
-          if (res.status === 204) alert("Porfoliio deleted!");
+          if (res.status === 204);
           else alert("Failed to delete note.");
           getPortfolios();
         })

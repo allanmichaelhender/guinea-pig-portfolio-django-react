@@ -73,10 +73,12 @@ def invest_daily(
         )
 
         for daily_entry in EUROSTOXX_queryset:
+     
             EUROSTOXX_total_shares += (
                 float(EUROSTOXX_aggregated_amount_per_day) / float(daily_entry.close)
             ) * float(EUROSTOXX_weight)
             EUROSTOXX_value = EUROSTOXX_total_shares * float(daily_entry.close)
+
 
     if HSI_queryset is not None and len(HSI_queryset) != 0:
         HSI_aggregated_amount_per_day = total_amount_to_invest / (len(HSI_queryset) + 1)
