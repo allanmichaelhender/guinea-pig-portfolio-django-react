@@ -12,7 +12,8 @@ one_week_ago = today - timedelta(days=7)
 datefrom = one_week_ago.isoformat()
 dateto = today.isoformat()
 
-api_key = os.getenv("API_KEY")
+# api_key = os.environ.get("API_KEY")
+api_key = "xjDy6auzJiNBaXQjmERBIGb84lN93EsR"
 
 
 def create_url(symbol, datefrom, dateto, apikey):
@@ -27,6 +28,7 @@ def create_url(symbol, datefrom, dateto, apikey):
 
 def fetch_daily_data():
     ftse_api_url = create_url("^FTSE", datefrom, dateto, api_key)
+    print(ftse_api_url)
     ftse_response = requests.get(ftse_api_url, timeout=30)
 
     if ftse_response.status_code == 200:
