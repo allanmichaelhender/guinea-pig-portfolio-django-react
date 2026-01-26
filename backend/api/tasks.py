@@ -1,10 +1,15 @@
 import requests
 from .models import EuroStoxxData, FtseData, Snp500Data, Nikkei225Data, HsiData
 from datetime import date, timedelta
-from dotenv import load_dotenv
-import os
 
-load_dotenv("../.env")
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+
+api_key = os.getenv("API_KEY")
 
 today = date.today()
 one_week_ago = today - timedelta(days=7)
@@ -12,8 +17,6 @@ one_week_ago = today - timedelta(days=7)
 datefrom = one_week_ago.isoformat()
 dateto = today.isoformat()
 
-# api_key = os.environ.get("API_KEY")
-api_key = "xjDy6auzJiNBaXQjmERBIGb84lN93EsR"
 
 
 def create_url(symbol, datefrom, dateto, apikey):
@@ -28,7 +31,6 @@ def create_url(symbol, datefrom, dateto, apikey):
 
 def fetch_daily_data():
     ftse_api_url = create_url("^FTSE", datefrom, dateto, api_key)
-    print(ftse_api_url)
     ftse_response = requests.get(ftse_api_url, timeout=30)
 
     if ftse_response.status_code == 200:
