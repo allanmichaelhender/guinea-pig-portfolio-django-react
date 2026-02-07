@@ -35,12 +35,12 @@ DATABASES = {
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-Q_CLUSTER = {
-    'name': 'MyProject',
-    'workers': 1,  # Set this to 1
-    'recycle': 500,
-    'orm': 'default',
-}
+# Q_CLUSTER = {
+#     'name': 'MyProject',
+#     'workers': 1,  # Set this to 1
+#     'recycle': 500,
+#     'orm': 'default',
+# }
 
 
 # Quick-start development settings - unsuitable for production
