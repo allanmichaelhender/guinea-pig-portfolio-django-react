@@ -24,19 +24,24 @@ env = environ.Env()
 environ.Env.read_env()
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='sqlite:///db.sqlite3')
+    'default': env.db(
+        'DATABASE_URL', 
+        default='sqlite:///db.sqlite3',
+        conn_max_age=0  # Forces connections to close immediately after use
+    )
 }
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 Q_CLUSTER = {
     'name': 'MyProject',
-    'workers': 4,
-    'timeout': 240,   # Seconds a worker can spend on a task
-    'retry': 400,    # MUST be greater than timeout (e.g., 2x timeout)
+    'workers': 1,  # Set this to 1
+    'recycle': 500,
     'orm': 'default',
 }
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
