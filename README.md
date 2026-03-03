@@ -11,7 +11,7 @@ I created this project as a proof of concept to allow users to test portfolios b
 ## Live Demo
 
 I've deployed a working version here:  
-[Demo Site](https://guinea-pig-portfolio.ddnsfree.com/)) 
+[Demo Site](https://guinea-pig-portfolio.ddnsfree.com/)
 
 https://guinea-pig-portfolio.ddnsfree.com/
 
